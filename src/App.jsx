@@ -1,10 +1,11 @@
 import './App.css'
+import NavBar from './components/NavBar'
 
 function App() {
 
   return (
     <>
-      <h1>Wedding Site</h1>
+      <NavBar />
     </>
   )
 }
