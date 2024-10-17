@@ -8,7 +8,7 @@ import LoginButton from './LoginButton'
 
 export default function NavBar() {
   return (
-    <nav className="py-4 px-8 bg-base-nav ">
+    <nav className="py-4 px-8 bg-base-nav sticky top-0 ">
         <div className='max-w-4xl flex justify-between items-center mx-auto'>
             <div className="flex justify-between gap-2 w-3/5 ">
             <Link to="/home" className="flex items-center ">
