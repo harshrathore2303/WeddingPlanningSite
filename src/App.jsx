@@ -1,5 +1,5 @@
 import './App.css'
-import BudgetTrack from './components/BudgetTrack'
+import BudgetTrack from './components/BudgetTracker/BudgetTrack'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
 

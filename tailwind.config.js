@@ -12,7 +12,10 @@ export default {
           but:'rgb(129, 56, 56)',
           butHover:'rgb(52, 22, 22)',
         }
-      }
+      },
+      fontFamily: {
+        'inria': ['Inria Sans', 'sans-serif'],
+      },
     },
   },
   plugins: [],
