@@ -38,7 +38,7 @@ const BudgetManagement = () => {
 
     return (
         <div className=''>
-            <div className='w-[350px] bg-[#F4F4FF] rounded-lg shadow-lg'>
+            <div className='w-[350px] bg-[#F4F4FF] rounded-lg shadow-lg border-gray-300 border'>
                 <div className='flex  bg-[#DADAE6] rounded-lg justify-center font-inria shadow-lg flex-col transition duration-200 hover:scale-105'>
                     <button className='flex flex-row items-center justify-center text-[#AD563B] transition transform font-bold py-2' onClick={openModal}>
                         <IoIosAddCircleOutline size={20} className='mx-1' />

@@ -3,7 +3,7 @@ import React from 'react'
 const Recommendation = () => {
     return (
         <div className=''>
-            <div className='w-[350px] bg-[#F4F4FF] rounded-lg shadow-lg'>
+            <div className='w-[350px] bg-[#F4F4FF] rounded-lg shadow-lg border-gray-300 border'>
                 <div className='flex justify-center bg-[#DADAE6] rounded-lg shadow-lg py-2 text-[#AD563B] font-inria font-bold'>
                     Recommendation
                 </div>
