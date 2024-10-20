@@ -4,7 +4,7 @@ import HallsList from './HallsList';
 const HallsPage = () => {
   const hallsData = Array.from({ length: 50 }, (_, index) => ({
     id: index + 1,
-    imageSrc: 'https://via.placeholder.com/150',
+    imageSrc: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1798&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     title: `Hall Name ${index + 1}`,
     location: index % 2 === 0 ? 'Noida' : 'Mumbai',
     services: 'Photo + Video',
@@ -43,7 +43,8 @@ const HallsPage = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white max-w-4xl mx-auto shadow-lg ">
+        <div className='flex justify-between '>
       <h1 className="text-3xl font-bold text-brown-800 mb-6">Halls</h1>
       <div className="flex justify-between mb-6">
         <input
@@ -53,6 +54,7 @@ const HallsPage = () => {
           onChange={handleSearch}
           className="border border-gray-300 py-2 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
+      </div>
       </div>
       {/* Pass filtered and paginated data to HallsList */}
       <HallsList halls={currentHalls} />
