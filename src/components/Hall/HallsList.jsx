@@ -1,5 +1,5 @@
 import React from 'react';
-import HallCard from './HallCard'; // Rename Hall.jsx to HallCard.jsx for consistency
+import HallCard from './HallCard';
 
 const HallsList = ({ halls }) => {
   return (
