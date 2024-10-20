@@ -16,7 +16,7 @@ const HallsList = ({ halls }) => {
           />
         ))
       ) : (
-        <p className="text-center col-span-3">No halls found</p>
+        <div className="text-center w-full">No halls found</div>
       )}
     </div>
   );
