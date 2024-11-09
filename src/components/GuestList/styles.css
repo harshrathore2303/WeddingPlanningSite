@@ -1,0 +1,13 @@
+.buttonContainer{
+    display: flex;
+    gap: 20px;
+}
+
+.button {
+    border: 2px solid gray;
+    padding: 10px;
+    font-size: medium;
+    background-color: lightgray;
+    border-radius: 50px;
+    transition: width 2s, height 4s;
+}
