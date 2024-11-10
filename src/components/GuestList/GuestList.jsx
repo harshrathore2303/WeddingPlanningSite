@@ -3,6 +3,7 @@ import AddGroup from './AddGroup';
 import AddGuest from './AddGuest';
 import AddEvent from './AddEvent';
 import List from './List';
+import Events from './Events';
 
 
 // data will look like this
@@ -257,31 +258,32 @@ const data = [
   },
 ];
 
+const events = [
+  {
+    id: 1,
+    event: 'mehendi',
+    checked: false
+  },
+  {
+    id: 2,
+    event: 'haldi',
+    checked: false
+  },
+  {
+    id: 3,
+    event: 'pujan',
+    checked: false
+  },
+  {
+    id: 4,
+    event: 'marriage',
+    checked: false
+  },
 
-const GuestList = () => {
-  const events = [
-    {
-      id: 1,
-      event: 'mehendi',
-      checked: false
-    },
-    {
-      id: 2,
-      event: 'haldi',
-      checked: false
-    },
-    {
-      id: 3,
-      event: 'pujan',
-      checked: false
-    },
-    {
-      id: 4,
-      event: 'marriage',
-      checked: false
-    },
+];
 
-  ];
+const GuestList = ({setTotalGuest}) => {
+
   const [isGroupOpen, setIsGroupOpen] = useState(false);
   const [isGuestOpen, setIsGuestOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
@@ -289,18 +291,18 @@ const GuestList = () => {
 
   const [groupName, setGroupName] = useState("");
   const [list, setList] = useState(events);
-  
+
   const group = [];
-  // const handleAddGroup = ()=>{
-    
-  // }
+
+  
+  // setTotalGuest();
+
   return (
     <>
       <div className="container">
-        <div className='buttonContainer  gap-4 flex'>
-
+        <div className='buttonContainer gap-4 flex'>
           {/* Button to add groups */}
-          <button className="button border-2 border-gray-500 p-2.5 px-6 text-base bg-gray-200 rounded-full transition-all duration-2000 ease-in-out" onClick={()=>setIsGroupOpen(true)}>
+          <button className="button border-2 border-gray-500 p-2.5 px-6 text-base bg-gray-200 rounded-full transition-all duration-2000 ease-in-out" onClick={() => setIsGroupOpen(true)}>
             Add Group
           </button>
 
@@ -316,18 +318,23 @@ const GuestList = () => {
         </div>
         {/* Modals */}
         {
-          isGroupOpen && <AddGroup setIsGroupOpen={setIsGroupOpen} setGroupName={setGroupName}/>
+          isGroupOpen && <AddGroup setIsGroupOpen={setIsGroupOpen} setGroupName={setGroupName} />
         }
-        
+
         {
-          isGuestOpen && <AddGuest list={list} setList={setList} setIsGuestOpen={setIsGuestOpen} data={data}/>
+          isGuestOpen && <AddGuest list={list} setList={setList} setIsGuestOpen={setIsGuestOpen} data={data} />
         }
-        
+
         {
-          isEventOpen && <AddEvent setIsEventOpen={setIsEventOpen} setEventName={setEventName}/>
+          isEventOpen && <AddEvent setIsEventOpen={setIsEventOpen} setEventName={setEventName} />
         }
+
         {/* List */}
-        <List data={data}/>
+        <div className='flex gap-2'>
+          <List data={data} />
+          {/* Events */}
+          <Events events={events} />
+        </div>
       </div>
     </>
   )
