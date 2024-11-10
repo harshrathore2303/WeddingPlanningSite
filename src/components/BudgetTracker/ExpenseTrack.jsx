@@ -24,7 +24,7 @@ const ExpenseTrack = () => {
 
     return (
         <div className=''>
-            <div className='bg-[#F4F4FF] w-[400px] mx-5 rounded-lg shadow-lg border-gray-300 border'>
+            <div className='bg-[#F4F4FF] w-[400px] rounded-lg shadow-lg border-gray-300 border'>
                 <div className='flex justify-center font-inria font-bold items-center py-2 w-full bg-[#DADAE6] rounded-lg shadow-lg'>
                     <FaRupeeSign size={15} className='mx-1' />
                     Total Expense

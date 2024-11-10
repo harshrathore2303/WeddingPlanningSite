@@ -21,7 +21,7 @@ const ListData = ({guest}) => {
                     <div className="flex flex-wrap justify-center gap-1 items-center mt-2">
 
                         {displayedItems.map((event, index) => (
-                            <div key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-xs"> 
+                            <div key={index} className="bg-[#FFB6C1] text-[#333333] px-3 py-1 rounded-md text-xs"> 
                                 {event}
                             </div>
                         ))}

@@ -1,7 +1,8 @@
 import './App.css'
-import BudgetTrack from './components/BudgetTracker/BudgetTrack'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
+import Tools from './components/Tools/Tools'
+import PlanningTools from './components/PlanningTools'
 
 function App() {
 
@@ -9,7 +10,8 @@ function App() {
     <>
       <NavBar />
       {/* <Home /> */}
-      <BudgetTrack />
+      <PlanningTools />
+      {/* <Tools /> */}
     </>
   )
 }

@@ -10,7 +10,7 @@ const AddGroup = ({ setGroupName, setIsGroupOpen }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-1">
+    <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-10">
       <div className="bg-white p-6 rounded-lg w-96 border-[1px] border-black">
         <input
           className="border-2 border-gray-600 rounded-md w-full mb-8 p-2"

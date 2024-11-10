@@ -14,7 +14,7 @@ const AddGuest = ({ list, setList, setIsGuestOpen, data }) => {
 
 
     return (
-        <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-1 ">
+        <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-10">
             <div className="bg-white p-6 rounded-lg w-[60%] min-h-[30%] flex flex-col border-[1px] border-black overflow-auto">
                 {/* Details */}
                 <div className='flex gap-4'>
