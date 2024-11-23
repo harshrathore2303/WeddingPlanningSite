@@ -15,7 +15,7 @@ const BudgetModal = ({ closeModal, addCategory }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
             <div className="bg-[#dadae6] p-6 rounded-lg shadow-lg w-[400px]">
                 <h2 className="text-xl font-bold mb-4 text-center">Add Category</h2>
                 <form onSubmit={handleSubmit}>

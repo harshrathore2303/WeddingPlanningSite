@@ -13,13 +13,10 @@ function App() {
   return (
     <div className='bg-[#e3d3d3] flex flex-col justify-between gap-4 min-h-screen '>
       <NavBar />
-      {/* <Home /> */}
-      <PlanningTools />
-      {/* <Tools /> */}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='*' element={<Notfound />} />
-        <Route path='/halls' element={<HallsPage />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/organize' element={<Notfound />} />
+        <Route path='/planning-tools' element={<PlanningTools />} />
       </Routes>
       <Footer />
     </div>
