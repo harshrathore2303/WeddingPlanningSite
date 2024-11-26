@@ -4,7 +4,7 @@ import HallsPage from './components/Halls/HallsPage'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
 import PlanningTools from './components/PlanningTools'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Notfound from './components/Notfound'
 import LoginPage from './components/Login/LoginPage'
 import SignupPage from './components/Login/SignupPage'
