@@ -1,26 +1,54 @@
-import React, { useState } from 'react';
-import { MdAttachMoney } from "react-icons/md";
-import ExpenseItem from './ExpenseItem';
+import React, { useState, useEffect } from 'react';
 import { FaRupeeSign } from "react-icons/fa";
+import ExpenseItem from './ExpenseItem';
 
 const ExpenseTrack = () => {
-    const [categories, setCategroies] = useState([
-        { title: 'Vendor 1', price: 220000, checked: false },
-        { title: 'Vendor 2', price: 150000, checked: false },
-        { title: 'Vendor 3', price: 300000, checked: false },
-        { title: 'Vendor 4', price: 200000, checked: false },
-        { title: 'Vendor 5', price: 100000, checked: false },
-    ]);
+    const [categories, setCategories] = useState([]);
 
-    const handleCheckboxChange = (index) => {
-        const updatedCategories = [...categories];
-        updatedCategories[index].checked = !updatedCategories[index].checked;
-        setCategroies(updatedCategories);
+    useEffect(() => {
+        fetchBudgetItems();
+
+        const onBudgetChange = () => fetchBudgetItems();
+        window.addEventListener('budgetChange', onBudgetChange);
+
+        return () => window.removeEventListener('budgetChange', onBudgetChange);
+    }, []);
+
+    const fetchBudgetItems = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/budget', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching budget items:', error);
+        }
     };
 
-    const totalPrice = categories.reduce((result, category) => result + category.price, 0);
-    const checkedAmount = categories.reduce((result, category) => {return category.checked ? result + category.price : result}, 0);
-    const remainingAmount = totalPrice - checkedAmount;
+    const handleCheckboxChange = async (id, checked) => {
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`http://localhost:3000/budget/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ checked })
+            });
+            fetchBudgetItems();
+        } catch (error) {
+            console.error('Error updating budget item:', error);
+        }
+    };
+
+    const totalAmount = categories.reduce((total, category) => total + category.amount, 0);
+    const checkedAmount = categories.reduce((total, category) => category.checked ? total + category.amount : total, 0);
+    const remainingAmount = totalAmount - checkedAmount;
 
     return (
         <div className=''>
@@ -30,19 +58,21 @@ const ExpenseTrack = () => {
                     Total Expense
                 </div>
 
-                {categories.map((category, index) => (
+                {categories.map((category) => (
                     <ExpenseItem
-                        key={index}
-                        label={category}
+                        key={category._id}
+                        id={category._id}
+                        title={category.title}
+                        amount={category.amount}
                         checked={category.checked}
-                        onCheckboxChange={() => handleCheckboxChange(index)}
+                        onCheckboxChange={handleCheckboxChange}
                     />
                 ))}
 
                 <div className='flex justify-evenly px-5 py-5 border-t-gray-300 border-t-2'>
                     <div className='flex justify-evenly w-[350px]'>
-                        <span>Total Price</span>
-                        <span>₹{totalPrice}</span>
+                        <span>Total Amount</span>
+                        <span>₹{totalAmount}</span>
                     </div>
                 </div>
                 <div className='flex justify-evenly px-5 py-1'>
@@ -54,6 +84,6 @@ const ExpenseTrack = () => {
             </div>
         </div>
     );
-}
+};
 
 export default ExpenseTrack;

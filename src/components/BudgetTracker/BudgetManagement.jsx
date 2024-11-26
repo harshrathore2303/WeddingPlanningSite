@@ -1,17 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import BudgetModal from './BudgetModal';
 import { FaRegTrashAlt } from "react-icons/fa";
 
 const BudgetManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [categories, setCategroies] = useState([
-        { title: 'Vendor 1', price: 220000, checked: false },
-        { title: 'Vendor 2', price: 150000, checked: false },
-        { title: 'Vendor 3', price: 300000, checked: false },
-        { title: 'Vendor 4', price: 200000, checked: false },
-        { title: 'Vendor 5', price: 100000, checked: false },
-    ]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        fetchBudgetItems();
+    }, []);
+
+    const fetchBudgetItems = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/budget', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            setCategories(data);
+
+            window.dispatchEvent(new Event('budgetChange'));
+        } catch (error) {
+            console.error('Error fetching budget items:', error);
+        }
+    };
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -21,20 +36,57 @@ const BudgetManagement = () => {
         setIsModalOpen(false);
     };
 
+    const onClickTrash = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`http://localhost:3000/budget/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            fetchBudgetItems();
+        } catch (error) {
+            console.error('Error deleting budget item:', error);
+        }
+    };
 
+    const addCategory = async (newCategory) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/budget', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(newCategory)
+            });
+            if (response.ok) {
+                fetchBudgetItems();
+                closeModal();
+            }
+        } catch (error) {
+            console.error('Error adding budget item:', error);
+        }
+    };
 
-    const onClickTrash = (index)=>{
-        const updatedCategory = [...categories];
-        updatedCategory.splice(index, 1);
-        setCategroies(updatedCategory)
-        console.log("Pressed");
-    }
-
-    const addCategory = (newCategory)=>{
-        console.log(newCategory)
-        setCategroies([...categories, newCategory])
-        closeModal();
-    }
+    const handleCheckboxChange = async (id, checked) => {
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`http://localhost:3000/budget/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ checked })
+            });
+            fetchBudgetItems();
+        } catch (error) {
+            console.error('Error updating budget item:', error);
+        }
+    };
 
     return (
         <div className=''>
@@ -45,26 +97,25 @@ const BudgetManagement = () => {
                         Add Category
                     </button>
                 </div>
-                {isModalOpen && <BudgetModal closeModal={closeModal} addCategory={addCategory}/>}
+                {isModalOpen && <BudgetModal closeModal={closeModal} addCategory={addCategory} />}
 
                 <div className='flex font-inria py-2 border-t-2 border-t-gray-300 justify-between px-4 font-bold'>
                     <div>Category</div>
-                    <div className='flex-1 text-center'>Prices</div>
+                    <div className='flex-1 text-center'>Amount</div>
                 </div>
 
-                {
-                    categories.map((category, index)=>(
-                        <div className='flex justify-between items-center font-inria py-2 border-t-2 border-t-gray-300 px-4'>
-                        <div>{category.title}</div>
-                        <p>₹{category.price}</p>
-                        <FaRegTrashAlt size={20} className='text-gray-500 cursor-pointer' onClick={()=>onClickTrash(index)}/>
+                {categories.map((category) => (
+                    <div key={category._id} className='flex justify-between items-center font-inria py-2 border-t-2 border-t-gray-300 px-4'>
+                        <div className="flex items-center">
+                            <span>{category.title}</span>
+                        </div>
+                        <p className={category.checked ? 'line-through' : ''}>₹{category.amount}</p>
+                        <FaRegTrashAlt size={20} className='text-gray-500 cursor-pointer' onClick={() => onClickTrash(category._id)} />
                     </div>
-                    ))
-                }
-
+                ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default BudgetManagement
+export default BudgetManagement;

@@ -4,8 +4,8 @@ const DisplayComponent = ({
   headingText,
   buttonText,
   imageUrl,
-  buttonStyles = "bg-[#8B3B2F] text-white py-2 px-6 mt-4 sm:rounded-full hover:bg-[#6f2e24]", // default button style
-  backgroundStyles = "bg-[#e3d3d3] p-5 sm:p-10", // default background style
+  buttonStyles = "bg-[#8B3B2F] text-white py-2 px-6 mt-4 sm:rounded-full hover:bg-[#6f2e24]",
+  backgroundStyles = "bg-[#e3d3d3] p-5 sm:p-10", 
 }) => {
   return (
     <section className={`${backgroundStyles} flex flex-col-reverse items-center sm:justify-between min-h-fit`}>

@@ -1,345 +1,259 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddGroup from './AddGroup';
 import AddGuest from './AddGuest';
 import AddEvent from './AddEvent';
 import List from './List';
 import Events from './Events';
+import { IoIosAddCircleOutline } from "react-icons/io";
 
-
-// data will look like this
-const data = [
-  {
-    id: 1,
-    title: 'friends',
-    guests: [
-      {
-        id: 1,
-        name: 'ABC',
-        events: ["mehendi", "haldi", "marriage", "reception"],
-        phone: 946464,
-        email: 'abc@gmail.com',
-      },
-      {
-        id: 2,
-        name: 'ASD',
-        events: ["mehendi", "marriage"],
-        phone: 78456,
-        email: 'asd@gmail.com',
-      },
-      {
-        id: 3,
-        name: 'John Doe',
-        events: ["mehendi", "sangeet", "wedding", "reception", "anniversary"],
-        phone: 985672,
-        email: 'john.doe@gmail.com',
-      },
-      {
-        id: 4,
-        name: 'Jane Smith',
-        events: ["mehendi", "wedding", "reception", "sangeet", "party"],
-        phone: 853612,
-        email: 'jane.smith@gmail.com',
-      },
-      {
-        id: 5,
-        name: 'Michael Johnson',
-        events: ["wedding", "reception", "mehendi"],
-        phone: 743563,
-        email: 'michael.johnson@gmail.com',
-      },
-      {
-        id: 6,
-        name: 'Emily Davis',
-        events: ["haldi", "marriage", "mehendi", "reception"],
-        phone: 988453,
-        email: 'emily.davis@gmail.com',
-      },
-      {
-        id: 7,
-        name: 'Chris Lee',
-        events: ["mehendi", "wedding", "reception"],
-        phone: 775543,
-        email: 'chris.lee@gmail.com',
-      },
-      {
-        id: 8,
-        name: 'Sophia Williams',
-        events: ["mehendi", "sangeet", "marriage"],
-        phone: 985634,
-        email: 'sophia.williams@gmail.com',
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: 'family',
-    guests: [
-      {
-        id: 1,
-        name: 'Nani',
-        events: ["mehendi", "haldi"],
-        phone: 12345,
-        email: 'nani@gmail.com',
-      },
-      {
-        id: 2,
-        name: 'Masi',
-        events: ["mehendi", "marriage"],
-        phone: 456125,
-        email: 'masi@gmail.com',
-      },
-      {
-        id: 3,
-        name: 'Aunt Ruby',
-        events: ["mehendi", "wedding", "reception"],
-        phone: 888766,
-        email: 'ruby.aunt@gmail.com',
-      },
-      {
-        id: 4,
-        name: 'Uncle Raj',
-        events: ["mehendi", "sangeet", "wedding", "reception"],
-        phone: 765432,
-        email: 'raj.uncle@gmail.com',
-      },
-      {
-        id: 5,
-        name: 'Grandpa John',
-        events: ["mehendi", "marriage"],
-        phone: 923847,
-        email: 'grandpa.john@gmail.com',
-      },
-      {
-        id: 6,
-        name: 'Grandma Sophia',
-        events: ["mehendi", "sangeet"],
-        phone: 765483,
-        email: 'grandma.sophia@gmail.com',
-      },
-      {
-        id: 7,
-        name: 'Brother Tim',
-        events: ["wedding", "reception", "mehendi"],
-        phone: 982356,
-        email: 'brother.tim@gmail.com',
-      },
-      {
-        id: 8,
-        name: 'Sister Lily',
-        events: ["wedding", "sangeet", "mehendi"],
-        phone: 654321,
-        email: 'sister.lily@gmail.com',
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: 'colleagues',
-    guests: [
-      {
-        id: 1,
-        name: 'Rachel Green',
-        events: ["sangeet", "marriage", "reception"],
-        phone: 903472,
-        email: 'rachel.green@gmail.com',
-      },
-      {
-        id: 2,
-        name: 'Monica Geller',
-        events: ["mehendi", "sangeet", "reception"],
-        phone: 873465,
-        email: 'monica.geller@gmail.com',
-      },
-      {
-        id: 3,
-        name: 'Phoebe Buffay',
-        events: ["wedding", "mehendi", "sangeet"],
-        phone: 783219,
-        email: 'phoebe.buffay@gmail.com',
-      },
-      {
-        id: 4,
-        name: 'Chandler Bing',
-        events: ["sangeet", "marriage", "reception"],
-        phone: 789654,
-        email: 'chandler.bing@gmail.com',
-      },
-      {
-        id: 5,
-        name: 'Joey Tribbiani',
-        events: ["mehendi", "sangeet", "wedding"],
-        phone: 786543,
-        email: 'joey.tribbiani@gmail.com',
-      },
-      {
-        id: 6,
-        name: 'Ross Geller',
-        events: ["marriage", "reception"],
-        phone: 543210,
-        email: 'ross.geller@gmail.com',
-      },
-      {
-        id: 7,
-        name: 'Janice Hosenstein',
-        events: ["mehendi", "wedding"],
-        phone: 983746,
-        email: 'janice.hosenstein@gmail.com',
-      },
-      {
-        id: 8,
-        name: 'Gunther',
-        events: ["reception", "sangeet"],
-        phone: 983456,
-        email: 'gunther@gmail.com',
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: 'neighbors',
-    guests: [
-      {
-        id: 1,
-        name: 'Tom Hardy',
-        events: ["wedding", "reception", "mehendi"],
-        phone: 567890,
-        email: 'tom.hardy@gmail.com',
-      },
-      {
-        id: 2,
-        name: 'Christian Bale',
-        events: ["mehendi", "sangeet", "wedding"],
-        phone: 678901,
-        email: 'christian.bale@gmail.com',
-      },
-      {
-        id: 3,
-        name: 'Matt Damon',
-        events: ["marriage", "reception"],
-        phone: 789012,
-        email: 'matt.damon@gmail.com',
-      },
-      {
-        id: 4,
-        name: 'Cate Blanchett',
-        events: ["mehendi", "sangeet", "wedding"],
-        phone: 890123,
-        email: 'cate.blanchett@gmail.com',
-      },
-      {
-        id: 5,
-        name: 'Benedict Cumberbatch',
-        events: ["wedding", "reception", "mehendi", "sangeet"],
-        phone: 901234,
-        email: 'benedict.cumberbatch@gmail.com',
-      },
-      {
-        id: 6,
-        name: 'Keira Knightley',
-        events: ["mehendi", "reception", "wedding"],
-        phone: 123456,
-        email: 'keira.knightley@gmail.com',
-      },
-      {
-        id: 7,
-        name: 'Tom Hanks',
-        events: ["reception", "wedding", "sangeet"],
-        phone: 234567,
-        email: 'tom.hanks@gmail.com',
-      },
-      {
-        id: 8,
-        name: 'Meryl Streep',
-        events: ["sangeet", "mehendi"],
-        phone: 345678,
-        email: 'meryl.streep@gmail.com',
-      },
-    ],
-  },
-];
-
-const events = [
-  {
-    id: 1,
-    event: 'mehendi',
-    checked: false
-  },
-  {
-    id: 2,
-    event: 'haldi',
-    checked: false
-  },
-  {
-    id: 3,
-    event: 'pujan',
-    checked: false
-  },
-  {
-    id: 4,
-    event: 'marriage',
-    checked: false
-  },
-
-];
-
-const GuestList = ({setTotalGuest}) => {
-
+const GuestList = ({ setTotalGuest }) => {
   const [isGroupOpen, setIsGroupOpen] = useState(false);
   const [isGuestOpen, setIsGuestOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
-  const [eventName, setEventName] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
-  const [groupName, setGroupName] = useState("");
-  const [list, setList] = useState(events);
+  useEffect(() => {
+    fetchGroups();
+    fetchEvents();
+  }, []);
 
-  const group = [];
+  const fetchGroups = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/guestlists', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch groups');
+      }
+      const data = await response.json();
+      setGroups(data);
+      updateTotalGuests(data);
+    } catch (error) {
+      console.error('Error fetching groups:', error);
+      showAlert('Failed to fetch groups', 'error');
+    }
+  };
 
-  
-  // setTotalGuest();
+  const fetchEvents = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/events', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch events');
+      }
+      const data = await response.json();
+      setEvents(data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      showAlert('Failed to fetch events', 'error');
+    }
+  };
+
+  const addGroup = async (title) => {
+    if (groups.some(group => group.title.toLowerCase() === title.toLowerCase())) {
+      showAlert('A group with this name already exists', 'error');
+      return false;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/guestlists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create group');
+      }
+
+      const newGroup = await response.json();
+      setGroups([...groups, newGroup]);
+      updateTotalGuests([...groups, newGroup]);
+      showAlert('Group added successfully', 'success');
+      return true;
+    } catch (error) {
+      console.error('Error creating group:', error);
+      showAlert('Failed to create group', 'error');
+      return false;
+    }
+  };
+
+  const deleteGroup = async (groupId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/guestlists/${groupId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete group');
+      }
+      const updatedGroups = groups.filter(group => group._id !== groupId);
+      setGroups(updatedGroups);
+      updateTotalGuests(updatedGroups);
+      showAlert('Group deleted successfully', 'success');
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      showAlert('Failed to delete group', 'error');
+    }
+  };
+
+  const addGuest = async (guestData, groupId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/guestlists/${groupId}/guests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(guestData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add guest');
+      }
+
+      await fetchGroups(); // Refresh the groups data
+      showAlert('Guest added successfully', 'success');
+      return true;
+    } catch (error) {
+      console.error('Error adding guest:', error);
+      showAlert('Failed to add guest', 'error');
+      return false;
+    }
+  };
+
+  const deleteGuest = async (groupId, guestId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/guestlists/${groupId}/guests/${guestId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete guest');
+      }
+      await fetchGroups(); // Refresh the groups data
+      showAlert('Guest deleted successfully', 'success');
+    } catch (error) {
+      console.error('Error deleting guest:', error);
+      showAlert('Failed to delete guest', 'error');
+    }
+  };
+
+  const addEvent = async (eventTitle) => {
+    if (events.some(event => event.event_title.toLowerCase() === eventTitle.toLowerCase())) {
+      showAlert('An event with this name already exists', 'error');
+      return false;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ event_title: eventTitle })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create event');
+      }
+
+      await fetchEvents(); // Refresh the events data
+      showAlert('Event added successfully', 'success');
+      return true;
+    } catch (error) {
+      console.error('Error creating event:', error);
+      showAlert('Failed to create event', 'error');
+      return false;
+    }
+  };
+
+  const deleteEvent = async (eventId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/events/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete event');
+      }
+      const updatedEvents = events.filter(event => event._id !== eventId);
+      setEvents(updatedEvents);
+      showAlert('Event deleted successfully', 'success');
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      showAlert('Failed to delete event', 'error');
+    }
+  };
+
+  const updateTotalGuests = (groupsData) => {
+    const total = groupsData.reduce((acc, group) => acc + (group.guests ? group.guests.length : 0), 0);
+    setTotalGuest(total);
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ show: true, message, type });
+    setTimeout(() => setAlert({ show: false, message: '', type: '' }), 3000);
+  };
 
   return (
-    <>
-      <div className="container">
-        <div className='buttonContainer gap-4 flex'>
-          {/* Button to add groups */}
-          <button className="button border-2 border-gray-500 p-2.5 px-6 text-base bg-gray-200 rounded-full transition-all duration-2000 ease-in-out" onClick={() => setIsGroupOpen(true)}>
-            Add Group
-          </button>
-
-          {/* Button to add guest */}
-          <button className="button border-2 border-gray-500 p-2.5 px-6 text-base bg-gray-200 rounded-full transition-all duration-2000 ease-in-out" onClick={() => setIsGuestOpen(true)}>
-            Add Guest
-          </button>
-
-          {/* Button to add events */}
-          <button className="button border-2 border-gray-500 p-2.5 px-6 text-base bg-gray-200 rounded-full transition-all duration-2000 ease-in-out" onClick={() => setIsEventOpen(true)}>
-            Add Event
-          </button>
+    <div className="container">
+      {alert.show && (
+        <div className={`alert ${alert.type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white p-2 mb-4 rounded`}>
+          {alert.message}
         </div>
-        {/* Modals */}
-        {
-          isGroupOpen && <AddGroup setIsGroupOpen={setIsGroupOpen} setGroupName={setGroupName} />
-        }
-
-        {
-          isGuestOpen && <AddGuest list={list} setList={setList} setIsGuestOpen={setIsGuestOpen} data={data} />
-        }
-
-        {
-          isEventOpen && <AddEvent setIsEventOpen={setIsEventOpen} setEventName={setEventName} />
-        }
-
-        {/* List */}
-        <div className='flex gap-2'>
-          <List data={data} />
-          {/* Events */}
-          <Events events={events} />
-        </div>
+      )}
+      <div className='buttonContainer gap-4 flex'>
+        <button className="flex flex-row items-center justify-center text-[#AD563B] transition duration-200 hover:scale-105 font-bold p-2 " onClick={() => setIsGroupOpen(true)}>
+          <IoIosAddCircleOutline size={20} className='mx-1' />
+          Add Group
+        </button>
+        <button className="flex flex-row items-center justify-center text-[#AD563B] transition duration-200 hover:scale-105 font-bold p-2 " onClick={() => setIsGuestOpen(true)}>
+          <IoIosAddCircleOutline size={20} className='mx-1' />
+          Add Guest
+        </button>
+        <button className="flex flex-row items-center justify-center text-[#AD563B] transition duration-200 hover:scale-105 font-bold p-2 " onClick={() => setIsEventOpen(true)}>
+          <IoIosAddCircleOutline size={20} className='mx-1' />
+          Add Event
+        </button>
       </div>
-    </>
-  )
+
+      {isGroupOpen && <AddGroup setIsGroupOpen={setIsGroupOpen} addGroup={addGroup} />}
+      {isGuestOpen && <AddGuest setIsGuestOpen={setIsGuestOpen} groups={groups} events={events} addGuest={addGuest} />}
+      {isEventOpen && <AddEvent setIsEventOpen={setIsEventOpen} addEvent={addEvent} />}
+
+      <div className='flex gap-2'>
+        <List data={groups} onDeleteGroup={deleteGroup} onDeleteGuest={deleteGuest} />
+        <Events events={events} onDeleteEvent={deleteEvent} />
+      </div>
+    </div>
+  );
 };
 
-
-
 export default GuestList;
+

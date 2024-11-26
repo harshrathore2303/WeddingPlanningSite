@@ -5,7 +5,7 @@ const ToggleButton = ({buttons, setActiveTab}) => {
 
     const handleButtonClick = (label) => {
         setActive(label);
-        setActiveTab(label); // Update the active tab in BudgetTrack
+        setActiveTab(label); // to update the active tab
     };
     
     return (
@@ -15,9 +15,10 @@ const ToggleButton = ({buttons, setActiveTab}) => {
                     {
                         buttons.map((button)=>(
                             <button
-                        className={`flex items-center justify-center px-2 py-2 rounded-full focus:outline-none text-[#333333] text-lg font-semibold w-40 transition ${active === button.label ? "bg-[#6CA0DC] text-white" : "bg-white"
-                            }`}
+                        className={`flex items-center justify-center px-2 py-2 rounded-full focus:outline-none text-[#333333] text-lg font-semibold w-40 transition ${active === button.label ? "bg-blue-500 text-white" : "bg-white"
+                            }` }
                         onClick={() => handleButtonClick(button.label)}
+                        key={button.label}
                     >
                         {button.icon && <button.icon size={30} className=''/>}
                         {button.label}

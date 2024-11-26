@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 
-const AddGroup = ({ setGroupName, setIsGroupOpen }) => {
+const AddGroup = ({ setIsGroupOpen, addGroup }) => {
   const [title, setTitle] = useState("");
 
-  const handleSave = () => {
-    setGroupName(title);
-    setTitle("");
-    setIsGroupOpen(false);
+  const handleSave = async () => {
+    if (title.trim()) {
+      const success = await addGroup(title);
+      if (success) {
+        setTitle("");
+        setIsGroupOpen(false);
+      }
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-10">
+    <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center z-20">
       <div className="bg-white p-6 rounded-lg w-96 border-[1px] border-black">
         <input
           className="border-2 border-gray-600 rounded-md w-full mb-8 p-2"
@@ -38,3 +42,4 @@ const AddGroup = ({ setGroupName, setIsGroupOpen }) => {
 };
 
 export default AddGroup;
+

@@ -1,29 +1,40 @@
 import './App.css'
 import Footer from './components/Footer'
-import HallsPage from './components/Hall/HallsPage'
+import HallsPage from './components/Halls/HallsPage'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
-import Tools from './components/Tools/Tools'
 import PlanningTools from './components/PlanningTools'
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Notfound from './components/Notfound'
+import LoginPage from './components/Login/LoginPage'
+import SignupPage from './components/Login/SignupPage'
+import WeddingServices from './components/Organise/WeddingServices'
+import Photographer from './components/Photography/Photographer'
+import HallDetails from './components/Halls/HallDetails';
+import PhotographerDetails from './components/Photography/PhotoGrapherDetails'
 
 function App() {
-
   return (
-    <div className='bg-[#e3d3d3] flex flex-col justify-between gap-4 min-h-screen '>
+    <div className='bg-[#ffffff] flex flex-col min-h-screen justify-between h-screen w-full'>
       <NavBar />
-      {/* <Home /> */}
-      <PlanningTools />
-      {/* <Tools /> */}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='*' element={<Notfound />} />
-        <Route path='/halls' element={<HallsPage />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/home" element={<Home />} />
+        <Route 
+          path="/planning-tools" element={<PlanningTools />} />
+        <Route path="/organize" element={<WeddingServices />} />
+        <Route path="/halls" element={<HallsPage />} />
+        <Route path="/halls/:id" element={<HallDetails />} />
+        <Route path="/photographers" element={<Photographer />} />
+        <Route path="/photographers/:id" element={<PhotographerDetails />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="*" element={<Notfound />} />
       </Routes>
       <Footer />
     </div>
   )
 }
 
-export default App
+export default App;
+

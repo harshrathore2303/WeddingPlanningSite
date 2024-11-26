@@ -7,6 +7,7 @@ import BudgetManagement from './BudgetTracker/BudgetManagement';
 import ExpenseTrack from './BudgetTracker/ExpenseTrack';
 import Recommendation from './BudgetTracker/Recommendation';
 import GuestList from './GuestList/GuestList';
+import CheckList from './CheckList/CheckList';
 
 const PlanningTools = () => {
     const [activeTab, setActiveTab] = useState("Budget");
@@ -18,33 +19,39 @@ const PlanningTools = () => {
     ];
     return (
         <div>
-            <div className='p-4 flex flex-col bg-[#FDF5E6] min-h-screen'>
-                <ToggleButton buttons={buttonData} setActiveTab={setActiveTab}/>
+            <div className='p-4 flex flex-col min-h-screen'>
+                <ToggleButton buttons={buttonData} setActiveTab={setActiveTab} />
 
                 {/* div for budget tracking */}
                 {
-                    activeTab == "Budget"
-                     && 
-                    <div className='flex justify-between mt-4'>
-                    <BudgetManagement />
-                    <ExpenseTrack />
-                    <Recommendation />
-                    </div>
+                    activeTab === "Budget" && (
+                        <div className="flex justify-between mt-4 w-full gap-4">
+                            <div className="flex-1 p-4">
+                                <BudgetManagement />
+                            </div>
+                            <div className="flex-1 p-4">
+                                <ExpenseTrack />
+                            </div>
+                            <div className="flex-1 p-4">
+                                <Recommendation />
+                            </div>
+                        </div>
+                    )
                 }
-                
+
 
 
                 {/* div for guest list */}
                 {
-                    activeTab == "GuestList" && <div>
-                        <GuestList setTotalGuest={setTotalGuest}/>
+                    activeTab == "GuestList" && <div >
+                        <GuestList setTotalGuest={setTotalGuest} />
                     </div>
                 }
 
                 {/* div for checklist */}
                 {
                     activeTab == "CheckList" && <div>
-                        check
+                        <CheckList />
                     </div>
                 }
             </div>

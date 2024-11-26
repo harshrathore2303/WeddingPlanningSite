@@ -1,126 +1,191 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GiCancel } from "react-icons/gi";
 import Modal from "./Modal";
+import TaskItem from "./TaskItem";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
-const initialTodo = [
-  {
-    id: 0,
-    title: "Mehendi",
-    task: [
-      {
-        id: 0,
-        description: "Book a Mehendi artist and finalize designs for the bride and guests.",
-        checked: false,
-      },
-      {
-        id: 1,
-        description: "Prepare the guest list for the Mehendi event and send invitations.",
-        checked: false,
-      },
-      {
-        id: 2,
-        description: "Arrange decorations and seating for the Mehendi function.",
-        checked: false,
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: "Venue Booking",
-    task: [
-      {
-        id: 0,
-        description: "Research potential wedding venues based on theme and budget.",
-        checked: false,
-      },
-      {
-        id: 1,
-        description: "Visit shortlisted venues and discuss available packages.",
-        checked: false,
-      },
-      {
-        id: 2,
-        description: "Confirm and book the venue by signing the contract.",
-        checked: false,
-      },
-    ],
-  },
-];
+const API_URL = 'http://localhost:3000';
 
 const CheckList = () => {
-  const [todo, setTodo] = useState(initialTodo);
-  const [showTask, setShowTask] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [editingChecklist, setEditingChecklist] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchChecklists();
+  }, []);
+
+  const fetchChecklists = async () => {
+    try {
+      const response = await fetch(`${API_URL}/checklists`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch checklists');
+      const checklists = await response.json();
+      setTodos(checklists);
+    } catch (err) {
+      setError("Failed to load checklists. Please try again.");
+    }
+  };
 
   const handleShowTask = (id) => {
-    const selectedTodo = todo.find((item) => item.id === id);
     setSelectedId(id);
-    setShowTask(selectedTodo ? selectedTodo.task : []);
   };
 
-  const handleCheckbox = (taskId) => {
-    const updatedTodo = todo.map((item) => {
-      if (item.id === selectedId) {
-        return {
-          ...item,
-          task: item.task.map((task) =>
-            task.id === taskId ? { ...task, checked: !task.checked } : task
-          ),
-        };
+  const handleCheckbox = async (todoId, taskId) => {
+    try {
+      const todo = todos.find(t => t._id === todoId);
+      const task = todo.tasks.find(t => t._id === taskId);
+      const updatedTask = { ...task, checked: !task.checked };
+      
+      const response = await fetch(`${API_URL}/checklists/${todoId}/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ checked: updatedTask.checked })
+      });
+      
+      if (!response.ok) throw new Error('Failed to update task');
+      
+      const updatedTodos = todos.map((t) => {
+        if (t._id === todoId) {
+          return {
+            ...t,
+            tasks: t.tasks.map((task) =>
+              task._id === taskId ? updatedTask : task
+            ),
+          };
+        }
+        return t;
+      });
+      setTodos(updatedTodos);
+    } catch (err) {
+      setError("Failed to update task. Please try again.");
+    }
+  };
+
+  const handleDeleteTask = async (todoId, taskId) => {
+    try {
+      const response = await fetch(`${API_URL}/checklists/${todoId}/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to delete task');
+      const updatedTodos = todos.map((todo) => {
+        if (todo._id === todoId) {
+          return {
+            ...todo,
+            tasks: todo.tasks.filter((task) => task._id !== taskId),
+          };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
+    } catch (err) {
+      setError("Failed to delete task. Please try again.");
+    }
+  };
+
+  const handleAddTodo = async (newTodo) => {
+    try {
+      const response = await fetch(`${API_URL}/checklists`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(newTodo)
+      });
+      if (!response.ok) throw new Error('Failed to create checklist');
+      const createdChecklist = await response.json();
+      setTodos([...todos, createdChecklist]);
+    } catch (err) {
+      setError("Failed to create checklist. Please try again.");
+    }
+  };
+
+  const handleAddTaskToChecklist = async (checklistId, newTasks) => {
+    try {
+      const addedTasks = await Promise.all(newTasks.map(async task => {
+        const response = await fetch(`${API_URL}/checklists/${checklistId}/tasks`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(task)
+        });
+        if (!response.ok) throw new Error('Failed to add task');
+        return response.json();
+      }));
+      const updatedTodos = todos.map((todo) => {
+        if (todo._id === checklistId) {
+          return {
+            ...todo,
+            tasks: [...todo.tasks, ...addedTasks],
+          };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
+    } catch (err) {
+      setError("Failed to add tasks. Please try again.");
+    }
+  };
+
+  const handleDeleteTodo = async (todoId) => {
+    try {
+      const response = await fetch(`${API_URL}/checklists/${todoId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to delete checklist');
+      const updatedTodos = todos.filter((todo) => todo._id !== todoId);
+      setTodos(updatedTodos);
+      if (selectedId === todoId) {
+        setSelectedId(null);
       }
-      return item;
-    });
-
-    setTodo(updatedTodo);
-    const updatedTasks = updatedTodo.find((item) => item.id === selectedId).task;
-    setShowTask(updatedTasks);
+    } catch (err) {
+      setError("Failed to delete checklist. Please try again.");
+    }
   };
 
-  const addTodo = (newTodo) => {
-    setTodo([...todo, newTodo]);
-  };
-
-  const deleteTask = (taskId) => {
-    const updatedTodo = todo.map((item) => {
-      if (item.id === selectedId) {
-        return {
-          ...item,
-          task: item.task.filter((task) => task.id !== taskId),
-        };
-      }
-      return item;
-    });
-
-    setTodo(updatedTodo);
-    const updatedTasks = updatedTodo.find((item) => item.id === selectedId).task;
-    setShowTask(updatedTasks);
-  };
-
-  const deleteTodo = (todoId) => {
-    const updatedTodoList = todo.filter((item) => item.id !== todoId);
-    setTodo(updatedTodoList);
-    setShowTask([]);
-  };
+  const selectedTodo = todos.find((todo) => todo._id === selectedId);
 
   return (
-    <div className="container pt-3">
-      <div className="text-2xl font-semibold flex justify-center mb-5">
-        <h1>CheckList</h1>
-      </div>
+    <div className="container mx-auto px-4 py-8">
 
-      <div className="button flex break-words gap-5 text-xl">
-        {todo.map((data) => (
-          <div key={data.id} className="flex items-center">
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
+
+      <div className="flex flex-wrap gap-4 mb-8">
+        {todos.map((todo) => (
+          <div key={todo._id} className="flex items-center">
             <button
-              className="border-2 border-black py-2 px-5 rounded-full flex items-center"
-              onClick={() => handleShowTask(data.id)}
+              className={`py-2 px-5 rounded-full flex items-center transition duration-150 ease-in-out ${
+                selectedId === todo._id
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+              }`}
+              onClick={() => handleShowTask(todo._id)}
             >
-              {data.title}
+              {todo.title}
               <button
-                className="ml-2 text-red-500"
-                onClick={() => deleteTodo(data.id)}
+                className="ml-2 text-red-500 hover:text-red-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTodo(todo._id);
+                }}
               >
                 <GiCancel size={20} />
               </button>
@@ -129,44 +194,64 @@ const CheckList = () => {
         ))}
 
         <button
-          className="border-2 border-black px-2 rounded-full"
+          className="flex flex-row items-center justify-center text-[#AD563B] transition duration-200 hover:scale-105 font-bold p-2 "
           onClick={() => setIsOpen(true)}
         >
-          <IoIosAdd size={30} />
+          <IoIosAddCircleOutline size={25} className='mx-1' /> New Checklist
         </button>
       </div>
 
-      <div className="task-list mt-5">
-        {showTask.map((task) => (
-          <div key={task.id} className="task bg-white p-4 mb-3 rounded shadow">
-            <label className="flex gap-2 items-center">
-              <div className="aspect-square w-10 flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  className="scale-150"
-                  checked={task.checked}
-                  onChange={() => handleCheckbox(task.id)}
-                />
-              </div>
-              <p className="font-medium text-lg">{task.description}</p>
-            </label>
-            <div className="font-semibold text-sm p-2">
-              <p>done_by: N/A</p>
-              <p>created_at: N/A</p>
-            </div>
-            <button
-              className="text-red-500 mt-2"
-              onClick={() => deleteTask(task.id)}
-            >
-              Delete Task
-            </button>
+      {selectedTodo && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4">{selectedTodo.title}</h2>
+          <button
+            className="flex flex-row items-center justify-center text-[#AD563B] transition duration-200 hover:scale-105 font-bold p-2 rounded-full border-2 border-gray-700"
+            onClick={() => {
+              setEditingChecklist(selectedTodo);
+              setIsOpen(true);
+            }}
+          > 
+            <IoIosAddCircleOutline size={25} className='mx-1' />
+            Add Task to Checklist
+          </button>
+          <div className="space-y-4">
+            <h3 className="text-xl font-medium text-gray-700">Pending Tasks</h3>
+            {selectedTodo.tasks.filter(task => !task.checked).map((task) => (
+              <TaskItem
+                key={task._id}
+                task={task}
+                onCheckboxChange={() => handleCheckbox(selectedTodo._id, task._id)}
+                onDelete={() => handleDeleteTask(selectedTodo._id, task._id)}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+          <div className="space-y-4 mt-8">
+            <h3 className="text-xl font-medium text-gray-700">Completed Tasks</h3>
+            {selectedTodo.tasks.filter(task => task.checked).map((task) => (
+              <TaskItem
+                key={task._id}
+                task={task}
+                onCheckboxChange={() => handleCheckbox(selectedTodo._id, task._id)}
+                onDelete={() => handleDeleteTask(selectedTodo._id, task._id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
-      {isOpen && <Modal setAddTodo={addTodo} setIsOpen={setIsOpen} />}
+      {isOpen && (
+        <Modal
+          onSave={editingChecklist ? handleAddTaskToChecklist : handleAddTodo}
+          onClose={() => {
+            setIsOpen(false);
+            setEditingChecklist(null);
+          }}
+          existingChecklist={editingChecklist}
+        />
+      )}
     </div>
   );
 };
 
 export default CheckList;
+

@@ -1,16 +1,16 @@
 import React from 'react';
 
-const ExpenseItem = ({ label, checked, onCheckboxChange }) => {
+const ExpenseItem = ({ id, title, amount, checked, onCheckboxChange }) => {
     return (
         <div className='flex justify-evenly py-2 px-5'>
             <div className='flex justify-evenly w-[350px]'>
-                <span className={checked ? 'line-through' : ''}>{label.title}</span>
-                <span className={checked ? 'line-through' : ''}>₹{label.price}</span>
+                <span className={checked ? 'line-through' : ''}>{title}</span>
+                <span className={checked ? 'line-through' : ''}>₹{amount}</span>
             </div>
             <input
                 type='checkbox'
                 checked={checked}
-                onChange={onCheckboxChange}
+                onChange={() => onCheckboxChange(id, !checked)}
                 className='mx-2'
             />
         </div>

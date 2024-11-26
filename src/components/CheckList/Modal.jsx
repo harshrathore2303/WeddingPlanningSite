@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-const Modal = ({ setAddTodo, setIsOpen }) => {
-  const [title, setTitle] = useState("");
-  const [tasks, setTasks] = useState([]);
+const Modal = ({ onSave, onClose, existingChecklist = null }) => {
+  const [title, setTitle] = useState(existingChecklist ? existingChecklist.title : "");
+  const [tasks, setTasks] = useState(existingChecklist ? [] : [{ description: "", checked: false }]);
   const [error, setError] = useState("");
 
   const handleAddTask = () => {
-    setTasks([...tasks, { id: tasks.length, description: "", checked: false }]);
+    setTasks([...tasks, { description: "", checked: false }]);
   };
 
   const handleTaskChange = (index, value) => {
@@ -17,7 +17,7 @@ const Modal = ({ setAddTodo, setIsOpen }) => {
   };
 
   const handleSave = () => {
-    if (title.trim() === "") {
+    if (!existingChecklist && title.trim() === "") {
       setError("Title cannot be empty or just spaces");
       return;
     }
@@ -28,31 +28,32 @@ const Modal = ({ setAddTodo, setIsOpen }) => {
       return;
     }
 
-    const newTodo = {
-      id: Math.random(),
-      title,
-      task: validTasks,
-    };
-
-    setAddTodo(newTodo);
-    setIsOpen(false);
+    if (existingChecklist) {
+      onSave(existingChecklist._id, validTasks);
+    } else {
+      const newTodo = {
+        title,
+        tasks: validTasks,
+      };
+      onSave(newTodo);
+    }
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-10">
       <div className="bg-white p-6 rounded-lg w-96 border-[1px] border-black">
-        {/* Title Input */}
-        <input
-          className="border-2 border-gray-600 rounded-md w-full mb-4 p-2"
-          placeholder="Enter title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        {!existingChecklist && (
+          <input
+            className="border-2 border-gray-600 rounded-md w-full mb-4 p-2"
+            placeholder="Enter checklist title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        )}
         
-        {/* Error Message */}
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
-        {/* Task Inputs */}
         <div className="mb-4">
           {tasks.map((task, index) => (
             <input
@@ -71,11 +72,10 @@ const Modal = ({ setAddTodo, setIsOpen }) => {
           </button>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-end gap-4">
           <button
             className="px-4 py-2 bg-gray-200 rounded-full"
-            onClick={() => setIsOpen(false)}
+            onClick={onClose}
           >
             Cancel
           </button>
@@ -92,3 +92,4 @@ const Modal = ({ setAddTodo, setIsOpen }) => {
 };
 
 export default Modal;
+
