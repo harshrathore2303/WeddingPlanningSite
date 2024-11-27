@@ -1,1 +1,1 @@
-# Wedding Planning Site
+# WedEase
